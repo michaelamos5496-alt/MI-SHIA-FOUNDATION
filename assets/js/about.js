@@ -263,25 +263,6 @@
   show(0, false);
 
 })();
-
-// Footer: the time in Accra and the visitor's own time
-(function () {
-  var a = document.getElementById('foot-time'), y = document.getElementById('foot-you');
-  if (!a && !y) return;
-  var opts = { hour: '2-digit', minute: '2-digit', hour12: true };
-  var accra, you;
-  try {
-    accra = new Intl.DateTimeFormat('en-GB', Object.assign({ timeZone: 'Africa/Accra' }, opts));
-    you = new Intl.DateTimeFormat('en-GB', opts);
-  } catch (e) { return; }
-  function tick() {
-    var now = new Date();
-    if (a) a.textContent = accra.format(now).toUpperCase();
-    if (y) y.textContent = you.format(now).toUpperCase();
-  }
-  tick(); setInterval(tick, 15000);
-})();
-
 // Hero video: fade in once it is really playing, and pause it while it is off screen to save battery
 (function () {
   var v = document.querySelector('.title video');
