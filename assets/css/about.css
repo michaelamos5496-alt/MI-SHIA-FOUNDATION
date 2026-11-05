@@ -1014,3 +1014,80 @@ button, [role="tab"], .gal-item { touch-action: manipulation; }
   .sb-link { align-self: center; }
 }
 @media (prefers-reduced-motion: reduce) { .sb-photo { transition: none; } .sb:hover .sb-photo { transform: none; } }
+
+/* ---- Phones: a lighter footer (the essentials only) ---- */
+@media (max-width: 720px) {
+  .sf-panel { padding-top: 26px; }
+  .sf-top { gap: 14px; }
+  .sf-tag { font-size: 24px; max-width: none; }
+
+  /* quick links: one tidy row instead of a tall list */
+  .sf-col h3 { display: none; }
+  .sf-col[aria-label="Explore"] { display: flex; flex-wrap: wrap; gap: 0 18px; }
+  .sf-col[aria-label="Explore"] > a { padding: 10px 0; font-size: 13px; }
+
+  /* contact: Instagram, email and phone only */
+  .sf-pills li:last-child { display: none; }
+  .sf-pills { gap: 8px; }
+
+  /* one call to action */
+  .sf-cta small { display: none; }
+  .sf-cta .sf-go:not(.sf-go-accent) { display: none; }
+
+  .sf-word { margin-top: 22px; }
+
+  /* bottom bar: just the copyright and the credit */
+  .sf-bar { padding: 14px 20px 18px; gap: 4px; }
+  .sf-clock, .sf-copy span { display: none; }
+}
+
+
+/* ================= Motion: page animations and effects ================= */
+:root { --ease-out: cubic-bezier(.16, 1, .3, 1); }
+
+/* 1. Smoother, staggered fade-up as sections arrive */
+.js .reveal { transform: translateY(40px); transition: opacity 1s var(--ease-out), transform 1s var(--ease-out); }
+.js .reveal.in { transform: none; }
+.js .reveal.done { transition: opacity .4s ease, transform .35s var(--ease-out), box-shadow .3s ease, background .3s ease, color .2s ease, border-color .2s ease; }
+
+/* 3. Photos zoom out gently while they scroll past (--pz is set by the script).
+      "scale" is used for hover, so it never fights the scroll zoom */
+.sb-photo, .ph img, .gal-item img { transform: scale(var(--pz, 1)); will-change: transform; }
+.sb-photo { transition: scale 1.2s ease; }
+.sb:hover .sb-photo { transform: scale(var(--pz, 1)); scale: 1.04; }
+.gal-item img { transition: scale .5s ease; }
+.gal-item:hover img { transform: scale(var(--pz, 1)); scale: 1.07; }
+
+/* 4. Hero: the title rises in, the words follow, then the title drifts as you scroll */
+.one-page .title { translate: 0 var(--drift, 0px); }
+@media (prefers-reduced-motion: no-preference) {
+  .one-page .title   { animation: title-rise 1.4s var(--ease-out) .15s both; }
+  .one-page .welcome { animation: hero-fade 1s var(--ease-out) .95s both; }
+  .one-page .cta     { animation: hero-fade 1s var(--ease-out) 1.1s both; }
+  .one-page .nav     { animation: nav-in .9s var(--ease-out) .4s both; }
+}
+@keyframes title-rise { from { opacity: 0; transform: translateY(9%) scale(.96); } to { opacity: 1; transform: none; } }
+@keyframes hero-fade  { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: none; } }
+@keyframes nav-in     { from { opacity: 0; transform: translateY(-16px); } to { opacity: 1; transform: none; } }
+
+/* 2. Words fill in as you scroll through a key paragraph */
+.rw { opacity: .16; transition: opacity .3s linear; }
+.rw.on { opacity: 1; }
+
+/* 5. Footer wordmark slides down into place */
+.sf-word span { display: block; transform: translateY(var(--wy, 0%)); will-change: transform; }
+
+/* 6. Nav logo shrinks once you scroll (the bar keeps its height, so nothing jumps) */
+.about-page .nav { height: var(--nav-h); padding-top: 0; padding-bottom: 0; }
+.about-page .brand img { transition: height .4s var(--ease-out); }
+.about-page .nav.scrolled .brand img { height: 40px; }
+@media (max-width: 720px) {
+  .sb:hover .sb-photo { scale: 1; }
+  .about-page .nav.scrolled .brand img { height: 36px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sb-photo, .ph img, .gal-item img { transform: none; }
+  .one-page .title { translate: none; }
+  .rw { opacity: 1; transition: none; }
+  .sf-word span { transform: none; }
+}

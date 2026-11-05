@@ -310,3 +310,90 @@
     }, { threshold: 0.05 }).observe(v);
   }
 })();
+
+// ===== Motion: stagger, word reveal, photo zoom, hero drift, footer wordmark =====
+(function () {
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce) return;                       // people who asked for less motion get none of this
+  var clamp = function (v, a, b) { return Math.min(b, Math.max(a, v)); };
+  var vh = function () { return window.innerHeight || document.documentElement.clientHeight; };
+
+  // 1. stagger siblings that fade in together (cards in a row, gallery pictures, ...)
+  var counts = new Map();
+  document.querySelectorAll('.reveal').forEach(function (el) {
+    var group = el.closest('ul, ol, .act-grid, .mv-grid, .pillars, .gallery, .news-grid') || el.parentElement;
+    var n = counts.get(group) || 0;
+    counts.set(group, n + 1);
+    if (n > 0) el.style.transitionDelay = Math.min(n, 6) * 90 + 'ms';
+    // once it has appeared, drop the delay and the slow curve so hover effects feel instant
+    el.addEventListener('transitionend', function (e) {
+      if (e.propertyName !== 'opacity' || !el.classList.contains('in')) return;
+      el.style.transitionDelay = '';
+      el.classList.add('done');
+    });
+  });
+
+  // 2. split key paragraphs into words
+  var wordBlocks = [];
+  document.querySelectorAll('.founder-bio > p:first-child, .mission-head p:not(.eyebrow)').forEach(function (p) {
+    var words = p.textContent.trim().split(/\s+/);
+    p.innerHTML = words.map(function (w) { return '<span class="rw">' + w + '</span>'; }).join(' ');
+    wordBlocks.push({ el: p, words: p.querySelectorAll('.rw'), lit: 0 });
+  });
+
+  // 3. photos that zoom out while scrolling past
+  var zoomEls = Array.prototype.slice.call(document.querySelectorAll('.sb-photo, .ph img, .gal-item img'));
+  var visible = new Set();
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) visible.add(e.target); else visible.delete(e.target); });
+    }, { rootMargin: '120px' });
+    zoomEls.forEach(function (el) { io.observe(el); });
+  }
+
+  var title = document.querySelector('.title');
+  var foot = document.querySelector('.sitefoot');
+  var word = document.querySelector('.sf-word span');
+
+  function update() {
+    var h = vh(), y = window.pageYOffset || 0;
+
+    // 4. hero title drifts down a little slower than the page
+    if (title && y < h * 1.3) title.style.setProperty('--drift', (y * 0.22).toFixed(1) + 'px');
+
+    // 2. light up words as the paragraph rises through the screen
+    wordBlocks.forEach(function (b) {
+      var top = b.el.getBoundingClientRect().top;
+      var p = clamp((h * 0.88 - top) / (h * 0.42), 0, 1);
+      var lit = Math.round(p * b.words.length);
+      if (lit === b.lit) return;
+      for (var i = Math.min(lit, b.lit); i < Math.max(lit, b.lit); i++) b.words[i].classList.toggle('on', i < lit);
+      b.lit = lit;
+    });
+
+    // 3. photo zoom: 1.12 -> 1 across the time the photo is on screen (gentler on phones)
+    var max = window.innerWidth < 720 ? 1.07 : 1.12;
+    visible.forEach(function (el) {
+      var r = el.parentElement.getBoundingClientRect();
+      var t = clamp((h - r.top) / (h + r.height), 0, 1);
+      el.style.setProperty('--pz', (max - (max - 1) * t).toFixed(4));
+    });
+
+    // 5. footer wordmark descends as the footer comes into view
+    if (foot && word) {
+      var fr = foot.getBoundingClientRect();
+      var fp = clamp((h - fr.top) / (fr.height * 0.9), 0, 1);
+      word.style.setProperty('--wy', (-(1 - fp) * 60).toFixed(1) + '%');
+    }
+  }
+
+  var ticking = false;
+  function onScroll() {
+    if (ticking) return; ticking = true;
+    window.requestAnimationFrame(function () { ticking = false; update(); });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  window.addEventListener('load', update);
+  update();
+})();
