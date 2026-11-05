@@ -10,6 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400..800&display=swap" rel="stylesheet">
+  <link rel="preload" as="image" href="assets/images/hero-poster.jpg" fetchpriority="high">
   <link rel="stylesheet" href="assets/css/site.css">
   <link rel="stylesheet" href="assets/css/about.css">
   <script>document.documentElement.classList.add('js');</script>
@@ -52,7 +53,7 @@
            assets/images/title-mask.svg. Put the clip at assets/videos/hero.mp4;
            until then the photo (poster) shows. -->
       <div class="title" aria-hidden="true">
-        <video id="hero-video" autoplay muted loop playsinline preload="auto"></video>
+        <video id="hero-video" autoplay muted loop playsinline preload="auto" poster="assets/images/hero-poster.jpg"></video>
         <script>
           /* each device downloads only its own video: ~3 MB on a phone, ~6 MB on a computer (was 13 MB);
              nothing is downloaded in data-saver mode, on 2G, or when the visitor asked for less motion */
