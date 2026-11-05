@@ -245,6 +245,13 @@
 
 
 
+
+  <!-- ============ MARQUEE BAND (moves as you scroll) ============ -->
+  <section class="marquee" aria-hidden="true">
+    <div class="mq-row mq-a"><div class="mq-track"><span>Charity starts at home</span><i aria-hidden="true"></i><span>This is our home</span><i aria-hidden="true"></i><span>Food</span><i aria-hidden="true"></i><span>Clothing</span><i aria-hidden="true"></i><span>Stationery</span><i aria-hidden="true"></i><span>Toiletries</span><i aria-hidden="true"></i><span>Charity starts at home</span><i aria-hidden="true"></i><span>This is our home</span><i aria-hidden="true"></i><span>Food</span><i aria-hidden="true"></i><span>Clothing</span><i aria-hidden="true"></i><span>Stationery</span><i aria-hidden="true"></i><span>Toiletries</span><i aria-hidden="true"></i><span>Charity starts at home</span><i aria-hidden="true"></i><span>This is our home</span><i aria-hidden="true"></i><span>Food</span><i aria-hidden="true"></i><span>Clothing</span><i aria-hidden="true"></i><span>Stationery</span><i aria-hidden="true"></i><span>Toiletries</span><i aria-hidden="true"></i><span>Charity starts at home</span><i aria-hidden="true"></i><span>This is our home</span><i aria-hidden="true"></i><span>Food</span><i aria-hidden="true"></i><span>Clothing</span><i aria-hidden="true"></i><span>Stationery</span><i aria-hidden="true"></i><span>Toiletries</span><i aria-hidden="true"></i></div></div>
+    <div class="mq-row mq-b"><div class="mq-track"><span>Charity starts at home</span><i aria-hidden="true"></i><span>This is our home</span><i aria-hidden="true"></i><span>Food</span><i aria-hidden="true"></i><span>Clothing</span><i aria-hidden="true"></i><span>Stationery</span><i aria-hidden="true"></i><span>Toiletries</span><i aria-hidden="true"></i><span>Charity starts at home</span><i aria-hidden="true"></i><span>This is our home</span><i aria-hidden="true"></i><span>Food</span><i aria-hidden="true"></i><span>Clothing</span><i aria-hidden="true"></i><span>Stationery</span><i aria-hidden="true"></i><span>Toiletries</span><i aria-hidden="true"></i><span>Charity starts at home</span><i aria-hidden="true"></i><span>This is our home</span><i aria-hidden="true"></i><span>Food</span><i aria-hidden="true"></i><span>Clothing</span><i aria-hidden="true"></i><span>Stationery</span><i aria-hidden="true"></i><span>Toiletries</span><i aria-hidden="true"></i><span>Charity starts at home</span><i aria-hidden="true"></i><span>This is our home</span><i aria-hidden="true"></i><span>Food</span><i aria-hidden="true"></i><span>Clothing</span><i aria-hidden="true"></i><span>Stationery</span><i aria-hidden="true"></i><span>Toiletries</span><i aria-hidden="true"></i></div></div>
+  </section>
+
   <!-- ============ SUPPORT ============ -->
   <section class="support" id="donate" aria-label="Support our work">
     <div class="sb reveal">
@@ -504,5 +511,28 @@
 
   <script src="assets/js/nav.js"></script>
   <script src="assets/js/about.js"></script>
+  <script>
+    /* Scroll animations: GSAP + ScrollTrigger (+ Lenis smooth scrolling on computers).
+       Loaded after the page, and skipped for visitors on data-saver, 2G or "reduce motion". */
+    (function () {
+      var m = window.matchMedia, c = navigator.connection || {};
+      if ((m && m('(prefers-reduced-motion: reduce)').matches) || c.saveData || /(^|-)2g$/.test(c.effectiveType || '')) return;
+      var fine = m && m('(hover: hover) and (pointer: fine)').matches;
+      function load(src) {
+        return new Promise(function (ok, no) {
+          var s = document.createElement('script'); s.src = src; s.async = false; s.onload = ok; s.onerror = no;
+          document.head.appendChild(s);
+        });
+      }
+      function go() {
+        load('https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js')
+          .then(function () { return load('https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js'); })
+          .then(function () { return fine ? load('https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js').catch(function () {}) : null; })
+          .then(function () { return load('assets/js/motion.js'); })
+          .catch(function () {});
+      }
+      if (document.readyState === 'complete') go(); else window.addEventListener('load', go);
+    })();
+  </script>
 </body>
 </html>

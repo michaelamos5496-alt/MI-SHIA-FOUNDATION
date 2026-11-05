@@ -1188,3 +1188,44 @@ button, [role="tab"], .gal-item { touch-action: manipulation; }
 @media (max-width: 720px) {
   .mission::before { background-position: center top 6px; background-size: 112% auto; opacity: .05; }
 }
+
+/* ================= GSAP scroll effects ================= */
+/* Lenis (smooth scrolling) needs the browser's own smooth scroll switched off */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
+
+/* once GSAP drives the hero, the CSS intro must not fight it */
+html.gsap-on .one-page .title, html.gsap-on .one-page .welcome, html.gsap-on .one-page .cta { animation: none; }
+html.gsap-on .about-page .nav { animation: none; }
+.gs-busy { transition: none !important; }
+
+/* scroll progress line along the top */
+.scroll-progress {
+  position: fixed; z-index: 90; left: 0; top: 0; width: 100%; height: 3px; pointer-events: none;
+  background: linear-gradient(90deg, #1EC0F0, #5D8D57); transform-origin: 0 50%; transform: scaleX(0);
+}
+
+/* headlines: each word rises out of its own mask */
+.w-mask { display: inline-block; overflow: hidden; vertical-align: top; padding: .06em .04em .16em; margin: -.06em -.04em -.16em; }
+.w { display: inline-block; will-change: transform; }
+
+/* magnetic buttons keep their colour fades but let GSAP move them */
+.mag { transition-property: background-color, color, box-shadow, border-color, opacity !important; }
+
+/* big moving text band between Activities and Support */
+.marquee { overflow: hidden; background: #fff; padding: clamp(20px, 3vw, 44px) 0; user-select: none; }
+.mq-row { display: block; overflow: hidden; white-space: nowrap; }
+.mq-track { display: inline-flex; align-items: center; gap: clamp(24px, 3vw, 48px); padding-right: clamp(24px, 3vw, 48px); will-change: transform; }
+.mq-track span {
+  font-weight: 800; letter-spacing: -.03em; line-height: 1.05;
+  font-size: clamp(54px, 9vw, 140px);
+  color: transparent; -webkit-text-stroke: 1.5px #3F7A45;
+}
+.mq-b .mq-track span { -webkit-text-stroke-color: #1EC0F0; }
+.mq-track span:nth-of-type(3n) { color: #3F7A45; -webkit-text-stroke: 0; }
+.mq-b .mq-track span:nth-of-type(3n) { color: #1EC0F0; }
+.mq-track i { flex: none; width: clamp(14px, 1.6vw, 24px); height: clamp(14px, 1.6vw, 24px); border-radius: 50%; background: #8EDCC6; }
+.mq-b .mq-track i { background: #CFEEFA; }
+@media (max-width: 720px) { .mq-track span { -webkit-text-stroke-width: 1px; } }
