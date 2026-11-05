@@ -326,7 +326,7 @@ html {
 .activities {
   min-height: calc(100vh - var(--nav-h));
   display: flex; align-items: center;
-  padding: clamp(40px, 6vw, 80px) 0;
+  padding: clamp(40px, 6vw, 80px) 0 clamp(20px, 3vw, 36px);
   background: #fff;
 }
 .activities .wrap { width: min(1180px, 100%); }
@@ -959,7 +959,7 @@ button, [role="tab"], .gal-item { touch-action: manipulation; }
 
 
 /* ================= Support: one wide photo, words straight on it ================= */
-.support { background: #fff; padding: clamp(36px, 5vw, 76px) 0; }
+.support { background: #fff; padding: clamp(6px, 1.2vw, 18px) 0 clamp(36px, 5vw, 76px); }
 .sb {
   position: relative; overflow: hidden; isolation: isolate;
   width: min(1200px, 100% - 2 * clamp(16px, 4vw, 48px)); margin: 0 auto;
@@ -1214,18 +1214,6 @@ html.gsap-on .about-page .nav { animation: none; }
 /* magnetic buttons keep their colour fades but let GSAP move them */
 .mag { transition-property: background-color, color, box-shadow, border-color, opacity !important; }
 
-/* big moving text band between Activities and Support */
-.marquee { overflow: hidden; background: #fff; padding: clamp(20px, 3vw, 44px) 0; user-select: none; }
-.mq-row { display: block; overflow: hidden; white-space: nowrap; }
-.mq-track { display: inline-flex; align-items: center; gap: clamp(24px, 3vw, 48px); padding-right: clamp(24px, 3vw, 48px); will-change: transform; }
-.mq-track span {
-  font-weight: 800; letter-spacing: -.03em; line-height: 1.05;
-  font-size: clamp(54px, 9vw, 140px);
-  color: transparent; -webkit-text-stroke: 1.5px #3F7A45;
-}
-.mq-b .mq-track span { -webkit-text-stroke-color: #1EC0F0; }
-.mq-track span:nth-of-type(3n) { color: #3F7A45; -webkit-text-stroke: 0; }
-.mq-b .mq-track span:nth-of-type(3n) { color: #1EC0F0; }
-.mq-track i { flex: none; width: clamp(14px, 1.6vw, 24px); height: clamp(14px, 1.6vw, 24px); border-radius: 50%; background: #8EDCC6; }
-.mq-b .mq-track i { background: #CFEEFA; }
-@media (max-width: 720px) { .mq-track span { -webkit-text-stroke-width: 1px; } }
+
+/* Activities no longer stretches to a full screen on computers: no empty gap before the Support banner */
+@media (min-width: 981px) { .activities { min-height: 0; padding-bottom: clamp(20px, 2.4vw, 32px); } }

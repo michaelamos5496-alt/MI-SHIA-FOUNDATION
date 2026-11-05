@@ -182,14 +182,6 @@
       rise(ac, { y: desk ? 130 : 70, rotate: function (i) { return [-6, 4, -4, 6, -2][i] || 0; }, opacity: 0, duration: 1.2, ease: 'power3.out', stagger: 0.13, scrollTrigger: { trigger: '.act-grid', start: 'top 84%' } });
     }
 
-    /* 8. Marquee band slides sideways as you scroll past (two rows, opposite ways) */
-    var mqa = $('.mq-a .mq-track'), mqb = $('.mq-b .mq-track');
-    if (mqa && mqb) {
-      var mqSt = { trigger: '.marquee', start: 'top bottom', end: 'bottom top', scrub: 0.6 };
-      gsap.fromTo(mqa, { xPercent: 0 }, { xPercent: -5, ease: 'none', scrollTrigger: mqSt });
-      gsap.fromTo(mqb, { xPercent: -5 }, { xPercent: 0, ease: 'none', scrollTrigger: mqSt });
-    }
-
     /* 9. Support banner: it opens up like a curtain while the photo drifts and the words follow */
     var sb = $('.sb');
     if (sb) {
