@@ -282,26 +282,16 @@
   tick(); setInterval(tick, 15000);
 })();
 
-// Hero video: it plays by default. It is switched off only for data-saver / slow connections,
-// and it pauses while it is off screen to save battery.
+// Hero video: fade in once it is really playing, and pause it while it is off screen to save battery
 (function () {
   var v = document.querySelector('.title video');
-  if (!v) return;
-  var c = navigator.connection || {};
-  var saver = c.saveData || /(^|-)2g$/.test(c.effectiveType || '');
-  var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (saver || still) {                 // keep the poster picture (and skip the 13 MB download)
-    v.removeAttribute('autoplay'); v.pause();
-    v.preload = 'none';
-    var s = v.querySelector('source'); if (s) { s.removeAttribute('src'); v.load(); }
-    return;
-  }
+  if (!v || !v.getAttribute('src')) return;          // no video chosen (data-saver / reduced motion): keep the colour fill
   v.muted = true;
   var box = v.closest('.title');
   function shown() { if (box) box.classList.add('is-playing'); }
   v.addEventListener('playing', shown);
-  if (!v.paused && v.readyState > 2) shown();                    // it may have started before this script ran
-  var p = v.play(); if (p && p.catch) p.catch(function () {});   // helps browsers that ignore autoplay
+  if (!v.paused && v.readyState > 2) shown();
+  var p = v.play(); if (p && p.catch) p.catch(function () {});
   if ('IntersectionObserver' in window) {
     new IntersectionObserver(function (es) {
       es.forEach(function (e) {

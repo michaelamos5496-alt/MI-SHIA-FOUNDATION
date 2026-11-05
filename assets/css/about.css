@@ -1097,3 +1097,33 @@ button, [role="tab"], .gal-item { touch-action: manipulation; }
    really playing, then the video fades in. (Data-saver / reduce-motion visitors keep the colour fill.) */
 .js .title video { opacity: 0; transition: opacity .9s ease; }
 .js .title.is-playing video { opacity: 1; }
+
+
+/* ===== Phones: a lighter hero background picture ===== */
+@media (max-width: 720px) { .hero::after { background-image: url("../images/hero-bg-sm.jpg"); } }
+
+/* ===== About text: bigger on computers, so it fills the space up to the map ===== */
+@media (min-width: 981px) {
+  .about-copy { width: min(52%, 700px); }
+  .about-copy .about-title { font-size: clamp(44px, 4.8vw, 80px); line-height: 1.08; }
+  .lede { font-size: clamp(15px, 1.45vw, 21px); line-height: 1.7; max-width: 24em; margin-top: clamp(22px, 2.3vw, 36px); }
+  .about-cta { margin-top: clamp(28px, 2.8vw, 44px); gap: clamp(22px, 2.4vw, 38px); }
+  .about-hero .btn-solid { padding: clamp(15px, 1.35vw, 21px) clamp(28px, 2.7vw, 42px); font-size: clamp(11px, .95vw, 14px); }
+  .discover-btn { min-height: clamp(52px, 4.2vw, 66px); padding: 8px 8px 8px clamp(28px, 2.8vw, 42px); font-size: clamp(11px, .95vw, 14px); gap: clamp(14px, 1.4vw, 20px); }
+  .discover-btn .arr { width: clamp(34px, 2.7vw, 44px); height: clamp(34px, 2.7vw, 44px); font-size: clamp(16px, 1.3vw, 20px); }
+}
+
+
+/* ===== Phones: the sliding cards move left and right only ===== */
+@media (max-width: 720px) {
+  .pillars, .mv-grid, .act-grid, .news-grid {
+    overflow-x: auto;
+    overflow-y: hidden;                 /* nothing can drift up or down inside the slider */
+    overscroll-behavior-x: contain;     /* a hard swipe won't trigger the browser's back gesture */
+    -webkit-overflow-scrolling: touch;
+  }
+  /* one card per swipe: a quick flick can't skip past several */
+  .pillars article, .mv-card, .act-card, .news-card { scroll-snap-stop: always; }
+  /* the cards themselves stay perfectly still: no hover lift on touch screens */
+  .pillars article:hover, .mv-card:hover, .act-card:hover, .news-card:hover { transform: none; }
+}
