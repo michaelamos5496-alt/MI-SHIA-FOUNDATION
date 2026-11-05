@@ -13,7 +13,8 @@ html { scroll-behavior: smooth; scroll-padding-top: calc(var(--nav-h) + 8px); }
   background: transparent;
   transition: background .25s ease, box-shadow .25s ease;
 }
-.about-page .nav.scrolled { background: rgba(255,255,255,.92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 1px 0 var(--line); }
+.about-page .nav.scrolled { background: rgba(255,255,255,.96); box-shadow: 0 1px 0 var(--line); }
+@media (min-width: 721px) { .about-page .nav.scrolled { background: rgba(255,255,255,.92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); } }
 .about-page .nav-links a[aria-current="page"] { color: var(--bronze); }
 /* square black buttons only in the page body, as in the reference */
 .about-page main .btn, .about-hero .btn { border-radius: 0; }
@@ -294,7 +295,6 @@ html {
   font: inherit; font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
   box-shadow: 0 8px 20px rgba(146, 117, 59, .35);
   transition: background .2s ease, transform .2s ease, box-shadow .2s ease;
-  animation: discover-ring 2.6s ease-out infinite;
 }
 .discover-btn:hover, .discover-btn:focus-visible { background: var(--ink); transform: translateY(-2px); box-shadow: 0 12px 26px rgba(0, 0, 0, .28); }
 .discover-btn:active { transform: translateY(0) scale(.98); }
@@ -309,11 +309,6 @@ html {
 .discover-btn[aria-expanded="true"] { animation: none; }
 .discover-btn[aria-expanded="true"] .arr { animation: none; transform: rotate(180deg); }
 @keyframes discover-bob { 0%, 100% { transform: translateY(-2px); } 50% { transform: translateY(3px); } }
-@keyframes discover-ring {
-  0%   { box-shadow: 0 8px 20px rgba(146, 117, 59, .35), 0 0 0 0 rgba(146, 117, 59, .45); }
-  70%  { box-shadow: 0 8px 20px rgba(146, 117, 59, .35), 0 0 0 14px rgba(146, 117, 59, 0); }
-  100% { box-shadow: 0 8px 20px rgba(146, 117, 59, .35), 0 0 0 0 rgba(146, 117, 59, 0); }
-}
 @media (prefers-reduced-motion: reduce) { .discover-btn, .discover-btn .arr { animation: none; } }
 @media (max-width: 720px) {
   .discover-btn { min-height: 44px; padding: 6px 6px 6px 20px; gap: 10px; font-size: 10.5px; }
@@ -1126,4 +1121,54 @@ button, [role="tab"], .gal-item { touch-action: manipulation; }
   .pillars article, .mv-card, .act-card, .news-card { scroll-snap-stop: always; }
   /* the cards themselves stay perfectly still: no hover lift on touch screens */
   .pillars article:hover, .mv-card:hover, .act-card:hover, .news-card:hover { transform: none; }
+}
+
+
+/* ================= Speed + responsive fixes ================= */
+/* pulsing "Discover" ring: transform + opacity only (no repainting) */
+.discover-btn { position: relative; }
+.discover-btn::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  border: 2px solid rgba(146, 117, 59, .55);
+  animation: discover-pulse 2.6s ease-out infinite;
+}
+.discover-btn[aria-expanded="true"]::after { animation: none; opacity: 0; }
+@keyframes discover-pulse { 0% { transform: scale(1); opacity: .8; } 80%, 100% { transform: scale(1.28, 1.5); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .discover-btn::after { animation: none; opacity: 0; } }
+
+/* fewer always-on GPU layers */
+.ph img, .gal-item img { will-change: auto; }
+
+/* the hero title keeps the hero on one screen on short laptops and sideways phones */
+.title { width: min(1000px, 92vw, max(380px, calc((100vh - 220px) * 2))); width: min(1000px, 92vw, max(380px, calc((100svh - 220px) * 2))); }
+
+/* tablets: text first, then the map (the map used to jump above the headline) */
+@media (min-width: 721px) and (max-width: 980px) {
+  .about-hero { display: flex; flex-direction: column; }
+  .about-grid { order: 1; }
+  .about-map { order: 2; margin-top: 8px; }
+}
+
+/* phones: lighter painting + sections grow with their content instead of clipping it */
+@media (max-width: 720px) {
+  .hero::after { filter: none; }
+  .ghana { filter: none; }
+  .about-screen { height: auto; min-height: max(calc(100vh - var(--nav-h)), 560px); min-height: max(calc(100svh - var(--nav-h)), 560px); }
+  .about-hero { padding-bottom: var(--map-h); }        /* room for the map under the text: nothing can overlap */
+  .mission, .activities, .founder, .founder.expanded {
+    height: auto;
+    min-height: max(calc(100vh - var(--nav-h)), 540px);
+    min-height: max(calc(100svh - var(--nav-h)), 540px);
+  }
+}
+
+
+/* the nav button never wraps, and everything in the bar shrinks together on very small phones */
+.nav-cta { white-space: nowrap; }
+@media (max-width: 380px) {
+  .nav { gap: 6px; padding-left: 10px; padding-right: 10px; }
+  .about-page .brand img { height: 38px; }
+  .about-page .nav.scrolled .brand img { height: 34px; }
+  .nav .btn-small { padding: 9px 12px; font-size: 9.5px; letter-spacing: .06em; }
+  .menu-toggle { width: 42px; height: 42px; }
 }
