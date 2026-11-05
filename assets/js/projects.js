@@ -18,6 +18,33 @@
     });
   }
 
+  // zoom the map onto a project's pin and show its area as a ring (~1.2 km radius)
+  var stage = sec.querySelector('.pm-stage'), ring = sec.querySelector('.pm-ring'), reset = sec.querySelector('.pm-reset');
+  var ZOOM = 2.6;
+  function zoomTo(pin) {
+    if (!map || !stage) return;
+    var W = map.clientWidth, H = map.clientHeight;
+    if (!pin) {
+      stage.style.transform = '';
+      map.style.setProperty('--pz', 1);
+      map.classList.remove('is-zoomed');
+      if (reset) reset.hidden = true;
+      return;
+    }
+    var px = parseFloat(pin.style.left) / 100 * W, py = parseFloat(pin.style.top) / 100 * H;
+    stage.style.transform = 'translate(' + (W / 2 - px * ZOOM).toFixed(1) + 'px,' + (H / 2 - py * ZOOM).toFixed(1) + 'px) scale(' + ZOOM + ')';
+    map.style.setProperty('--pz', ZOOM);
+    // metres per pixel at this latitude, z12 tiles shown at W / 3 css px per tile
+    var lat = +pin.dataset.lat, mpp = 156543.03 * Math.cos(lat * Math.PI / 180) / Math.pow(2, 12) * 256 / (W / 3);
+    var r = 1200 / mpp;
+    ring.style.left = px + 'px'; ring.style.top = py + 'px';
+    ring.style.width = ring.style.height = (r * 2) + 'px';
+    map.classList.add('is-zoomed');
+    if (reset) reset.hidden = false;
+  }
+  if (reset) reset.addEventListener('click', function () { zoomTo(null); pins.forEach(function (p) { p.classList.remove('is-on'); }); cards.forEach(function (c) { setOpen(c, false); }); });
+  window.addEventListener('resize', function () { var on = sec.querySelector('.pm-pin.is-on'); if (on && map.classList.contains('is-zoomed')) zoomTo(on); });
+
   function setOpen(card, open) {
     var b = card.querySelector('.pm-head-btn');
     b.setAttribute('aria-expanded', open ? 'true' : 'false');
@@ -28,7 +55,9 @@
   }
   function select(card) {
     cards.forEach(function (c) { if (c !== card) setOpen(c, false); });
-    setOpen(card, !card.classList.contains('is-open'));
+    var open = !card.classList.contains('is-open');
+    setOpen(card, open);
+    zoomTo(open ? sec.querySelector('.pm-pin[data-for="' + card.id.replace('proj-', '') + '"]') : null);
     if (window.ScrollTrigger) setTimeout(function () { window.ScrollTrigger.refresh(); }, 420);
   }
   cards.forEach(function (c) {
@@ -47,7 +76,8 @@
       head.focus({ preventScroll: true });
     });
   });
-  if (cards[0]) setOpen(cards[0], true);
+  if (cards[0]) setOpen(cards[0], true);  // first card open, map stays zoomed out until a project is chosen
+  pins.forEach(function (p) { p.classList.remove('is-on'); });
 
   // photo viewer (own dialog, so it never mixes with the Media gallery)
   var box = document.getElementById('pm-viewer');
