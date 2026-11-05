@@ -52,7 +52,9 @@
            assets/images/title-mask.svg. Put the clip at assets/videos/hero.mp4;
            until then the photo (poster) shows. -->
       <div class="title" aria-hidden="true">
-        <video muted loop playsinline preload="none" poster="assets/images/hero-small.jpg" data-src="assets/videos/hero.mp4"></video>
+        <video autoplay muted loop playsinline preload="auto">
+          <source src="assets/videos/hero.mp4" type="video/mp4">
+        </video>
       </div>
 
       <p class="welcome">

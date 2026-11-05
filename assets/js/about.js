@@ -282,30 +282,30 @@
   tick(); setInterval(tick, 15000);
 })();
 
-// Hero video: load it after the page, skip it on data-saver / slow connections, pause it when off screen
+// Hero video: it plays by default. It is switched off only for data-saver / slow connections,
+// and it pauses while it is off screen to save battery.
 (function () {
   var v = document.querySelector('.title video');
-  if (!v || !v.dataset.src) return;
+  if (!v) return;
   var c = navigator.connection || {};
-  var slow = c.saveData || /(^|-)2g|3g/.test(c.effectiveType || '');
+  var saver = c.saveData || /(^|-)2g$/.test(c.effectiveType || '');
   var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (slow || still) return;            // the poster picture stays
-  v.muted = true;
-  var loaded = false;
-  function load() {
-    if (loaded) return; loaded = true;
-    var s = document.createElement('source');
-    s.src = v.dataset.src; s.type = 'video/mp4';
-    v.appendChild(s); v.load();
-    var p = v.play(); if (p && p.catch) p.catch(function () {});
+  if (saver || still) {                 // keep the poster picture (and skip the 13 MB download)
+    v.removeAttribute('autoplay'); v.pause();
+    v.preload = 'none';
+    var s = v.querySelector('source'); if (s) { s.removeAttribute('src'); v.load(); }
+    return;
   }
-  if (document.readyState === 'complete') setTimeout(load, 300);
-  else window.addEventListener('load', function () { setTimeout(load, 300); });
+  v.muted = true;
+  var box = v.closest('.title');
+  function shown() { if (box) box.classList.add('is-playing'); }
+  v.addEventListener('playing', shown);
+  if (!v.paused && v.readyState > 2) shown();                    // it may have started before this script ran
+  var p = v.play(); if (p && p.catch) p.catch(function () {});   // helps browsers that ignore autoplay
   if ('IntersectionObserver' in window) {
     new IntersectionObserver(function (es) {
       es.forEach(function (e) {
-        if (!loaded) return;
-        if (e.isIntersecting) { var p = v.play(); if (p && p.catch) p.catch(function () {}); } else { v.pause(); }
+        if (e.isIntersecting) { var q = v.play(); if (q && q.catch) q.catch(function () {}); } else { v.pause(); }
       });
     }, { threshold: 0.05 }).observe(v);
   }

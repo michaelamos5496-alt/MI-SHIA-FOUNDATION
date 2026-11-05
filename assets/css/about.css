@@ -1091,3 +1091,9 @@ button, [role="tab"], .gal-item { touch-action: manipulation; }
   .rw { opacity: 1; transition: none; }
   .sf-word span { transform: none; }
 }
+
+
+/* Hero lettering: no still picture. The letters show the brand colour fill until the video is
+   really playing, then the video fades in. (Data-saver / reduce-motion visitors keep the colour fill.) */
+.js .title video { opacity: 0; transition: opacity .9s ease; }
+.js .title.is-playing video { opacity: 1; }
