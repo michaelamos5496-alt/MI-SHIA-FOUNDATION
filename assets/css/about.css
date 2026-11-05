@@ -1337,4 +1337,18 @@ html.gsap-on .about-page .nav { animation: none; }
 .pm-reset:hover { background: #3f7a45; color: #fff; }
 @media (prefers-reduced-motion: reduce) { .pm-stage { transition: none; } }
 @media print { body.print-projects .pm-stage { transform: none !important; } body.print-projects .pm-pin { --pz: 1 !important; } body.print-projects .pm-ring, body.print-projects .pm-reset { display: none; } }
-.pm-pin { transform-origin: 50% calc(50% + 25.5px); }
+
+/* pin = unrotated button anchored at its bottom centre; the teardrop is a rotated ::before whose tip sits on the anchor */
+.pm-pin { rotate: none; border: 0; background: transparent; box-shadow: none; transform-origin: 50% 100%; }
+.pm-pin::before { content: ""; position: absolute; inset: 0; top: -7.5px; bottom: 7.5px; border: 3px solid #fff; border-radius: 50% 50% 50% 0; rotate: -45deg; background: #3f7a45; box-shadow: 0 6px 14px rgba(0, 0, 0, .3); transition: background .2s; }
+.pm-pin.pm-up::before { background: #1EC0F0; }
+.pm-pin.pm-approx::before { border-style: dashed; }
+.pm-pin:hover::before, .pm-pin:focus-visible::before, .pm-pin.is-on::before { background: #2f6336; }
+.pm-pin.pm-up:hover::before, .pm-pin.pm-up.is-on::before { background: #0b9fcb; }
+.pm-pin:focus-visible { box-shadow: none; }
+.pm-pin:focus-visible::before { box-shadow: 0 0 0 4px #1EC0F0, 0 6px 14px rgba(0, 0, 0, .3); }
+.pm-pin > span { rotate: none; position: relative; margin-top: -7.5px; }
+.pm-pin > em { rotate: none; translate: 22px -46px; left: 100%; top: 0; }
+.pm-pin, .pm-pin:hover, .pm-pin:focus-visible, .pm-pin.is-on, .pm-pin.pm-up, .pm-pin.pm-up:hover, .pm-pin.pm-up.is-on { background: transparent; border-radius: 0; }
+.pm-pin { transform: none; translate: -50% -100%; }
+.pm-pin > em { left: 50%; top: auto; bottom: calc(100% + 10px); translate: -50% 0; }

@@ -37,7 +37,7 @@
     // metres per pixel at this latitude, z12 tiles shown at W / 3 css px per tile
     var lat = +pin.dataset.lat, mpp = 156543.03 * Math.cos(lat * Math.PI / 180) / Math.pow(2, 12) * 256 / (W / 3);
     var r = 1200 / mpp;
-    ring.style.left = px + 'px'; ring.style.top = py + 'px';
+    ring.style.left = pin.style.left; ring.style.top = pin.style.top;
     ring.style.width = ring.style.height = (r * 2) + 'px';
     map.classList.add('is-zoomed');
     if (reset) reset.hidden = false;
@@ -55,7 +55,8 @@
   }
   function select(card) {
     cards.forEach(function (c) { if (c !== card) setOpen(c, false); });
-    var open = !card.classList.contains('is-open');
+    var pin0 = sec.querySelector('.pm-pin[data-for="' + card.id.replace('proj-', '') + '"]');
+    var open = !card.classList.contains('is-open') || (pin0 && !map.classList.contains('is-zoomed'));
     setOpen(card, open);
     zoomTo(open ? sec.querySelector('.pm-pin[data-for="' + card.id.replace('proj-', '') + '"]') : null);
     if (window.ScrollTrigger) setTimeout(function () { window.ScrollTrigger.refresh(); }, 420);
@@ -68,6 +69,7 @@
       var c = document.getElementById('proj-' + p.dataset.for);
       if (!c) return;
       if (!c.classList.contains('is-open')) select(c);
+      else { setOpen(c, true); zoomTo(p); }
       var head = c.querySelector('.pm-head-btn');
       // on phones the list is below the map, so bring the card into view
       if (window.matchMedia('(max-width: 980px)').matches) {
